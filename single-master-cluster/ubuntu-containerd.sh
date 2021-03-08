@@ -1,27 +1,26 @@
+#!/bin/bash
+
+##################################
 # kubeadm create cluster on ubuntu
+##################################
+
+# #reset keyboard config
+# echo '# KEYBOARD CONFIGURATION FILE
+
+# # Consult the keyboard(5) manual page.
+
+# XKBMODEL="apple_laptop"
+# #XKBMODEL="pc105"
+# XKBLAYOUT="us"
+# XKBVARIANT=""
+# XKBOPTIONS=""
+
+# BACKSPACE="guess"' |sudo tee /etc/default/keyboard
+
+# #restart service
+# sudo service keyboard-setup restart
 
 
-```
-#reset keyboard config
-echo '# KEYBOARD CONFIGURATION FILE
-
-# Consult the keyboard(5) manual page.
-
-XKBMODEL="apple_laptop"
-#XKBMODEL="pc105"
-XKBLAYOUT="us"
-XKBVARIANT=""
-XKBOPTIONS=""
-
-BACKSPACE="guess"' |sudo tee /etc/default/keyboard
-
-#restart service
-sudo service keyboard-setup restart
-
-
-```
-
-```
 #install containerd
 cat <<EOF | sudo tee /etc/modules-load.d/containerd.conf
 overlay
@@ -172,11 +171,8 @@ oom_score = 0
 # Restart containerd
 sudo systemctl restart containerd
 
-```
-
 
 ## install kube*
-```
 sudo apt-get update && sudo apt-get install -y apt-transport-https curl
 curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
 cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
@@ -187,27 +183,23 @@ sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
 
-```
-
-```
-export http_proxy=http://10.68.69.107:995
-export https_proxy=http://10.68.69.107:995
-sudo -E apt-get update && sudo -E apt-get install -y apt-transport-https curl
-curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
-cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
-deb https://apt.kubernetes.io/ kubernetes-xenial main
-EOF
-sudo -E apt-get update
-sudo -E apt-get install -y kubelet kubeadm kubectl
-sudo -E apt-mark hold kubelet kubeadm kubectl
-
-```
+# ```
+# export http_proxy=http://10.68.69.107:995
+# export https_proxy=http://10.68.69.107:995
+# sudo -E apt-get update && sudo -E apt-get install -y apt-transport-https curl
+# curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+# cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+# deb https://apt.kubernetes.io/ kubernetes-xenial main
+# EOF
+# sudo -E apt-get update
+# sudo -E apt-get install -y kubelet kubeadm kubectl
+# sudo -E apt-mark hold kubelet kubeadm kubectl
+# ```
 
 
 ## init cluster from config
 
-```
-kubeadm config print init-defaults > init
+# kubeadm config print init-defaults > init
 
 # add cgroup drive part to it
 # and need change some default settings
@@ -257,17 +249,13 @@ scheduler: {}
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
-cgroupDriver: systemd' |tee init
+cgroupDriver: systemd' |tee /tmp/init
 
-kubeadm init --config init
-
-```
-
+# kubeadm init --config /tmp/init
 
 
 ## join cluster from config
-```
-kubeadm config print join-defaults > join
+#kubeadm config print join-defaults > join
 
 # add cgroup drive part to it
 # and need change some default settings
@@ -291,9 +279,7 @@ nodeRegistration:
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
-cgroupDriver: systemd' |tee join
+cgroupDriver: systemd' | tee /tmp/join
 
-kubeadm join --config init
+#kubeadm join --config /tmp/join
 
-
-```
