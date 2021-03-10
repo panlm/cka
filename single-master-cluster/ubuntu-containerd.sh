@@ -1,5 +1,10 @@
 #!/bin/bash
 
+gateway=$(netstat -nr |egrep '^0.0.0.0' |awk '{print $2}' )
+prefix=$(echo ${gateway%.*})
+ip=$(ifconfig |egrep "$prefix" |awk '{print $2}')
+hostname=$(hostname)
+
 ##################################
 # kubeadm create cluster on ubuntu
 ##################################
@@ -282,4 +287,13 @@ kind: KubeletConfiguration
 cgroupDriver: systemd' | tee /tmp/join
 
 #kubeadm join --config /tmp/join
+
+echo 
+echo 
+echo 'modify ini/join file with your ipaddress and hostname'
+echo $ip
+echo $hostname
+
+
+
 
