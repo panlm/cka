@@ -85,10 +85,7 @@ sudo yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
 
 sudo systemctl enable --now kubelet
 
-
 ```
-
-
 
 ## add /etc/hosts
 
@@ -97,48 +94,11 @@ sudo systemctl enable --now kubelet
 
 ```
 sudo kubeadm init --pod-network-cidr=10.244.0.0/16
-
 sudo kubeadm init --pod-network-cidr=192.168.0.0/16
-
-
 ```
 
 ## add node to cluster
 
 
 ## all node notready in cluster
-
-## install flannel
-flannel network
-```
-  sudo -E kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-
-```
-
-## install calico
-install calico
-```
-kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-```
-
-
-install calico
-```
-
-  sudo -E kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
-  sudo -E kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml
-
-```
-
-
-
-## run pod
-
-```
-kubectl create deploy webapp1 --image=nginx:1.16-alpine-perl --dry-run=client -o yaml > webapp1.yaml
-
-
-```
-
-
 

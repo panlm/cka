@@ -5,7 +5,7 @@ metadata:
   name: manual
 provisioner: kubernetes.io/no-provisioner
 volumeBindingMode: WaitForFirstConsumer
-allowVolumeExpansion: true
+allowVolumeExpansion: true # will extend pvc later
 reclaimPolicy: Retain
 ---
 apiVersion: v1
@@ -15,26 +15,26 @@ metadata:
   labels:
     type: local
 spec:
-  storageClassName: manual
+  storageClassName: manual # storage class name
   capacity:
     storage: 10Gi
   accessModes:
     - ReadWriteOnce
   hostPath:
     path: "/etc/data"
-  persistentVolumeReclaimPolicy: Recycle
+  persistentVolumeReclaimPolicy: Recycle  # auto recycle 
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: host-storage-pvc
 spec:
-  storageClassName: manual
+  storageClassName: manual # storage class name
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 100Mi
+      storage: 100Mi # init size, could be resize later
 ---
 apiVersion: v1
 kind: Pod
@@ -44,7 +44,7 @@ spec:
   volumes:
     - name: task-pv-storage
       persistentVolumeClaim:
-        claimName: host-storage-pvc
+        claimName: host-storage-pvc  # pvc name
   containers:
     - name: busybox
       image: busybox

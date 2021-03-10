@@ -1,0 +1,21 @@
+# There are some pods in the `users-backend` namespace. 
+# Create a `NetworkPolicy` that blocks all traffic to pods in this namespace, 
+# except for traffic from pods in the same namespace on port `80`.
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-network-policy-2
+  namespace: users-backend
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          project: users-backend
+    ports:
+    - protocol: TCP
+      port: 80

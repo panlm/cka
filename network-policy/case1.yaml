@@ -1,0 +1,17 @@
+# There is a pod called `maintenance` in the `foo` namespace. 
+# Create a `NetworkPolicy` that blocks all traffic to and from this pod.
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: test-network-policy-1
+  namespace: foo
+spec:
+  podSelector:
+    matchLabels:
+      app: maintenance
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  egress:

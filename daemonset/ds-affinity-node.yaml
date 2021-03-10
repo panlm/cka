@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: test-ds1
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      name: myds
+  template:
+    metadata:
+      labels:
+        name: myds
+    spec:
+      # tolerations:
+      # # this toleration is to have the daemonset runnable on master nodes
+      # # remove it if your masters can't run pods
+      # - key: node-role.kubernetes.io/master
+      #   effect: NoSchedule
+      containers:
+      - name: myds
+        image: nginx
+      affinity:        # https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname            # running ds on node which was labelled by node=work or node=work2
+                operator: In
+                values:
+                - ubu3
+                - ubuntu
