@@ -1,0 +1,66 @@
+--- #nfs-pv
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany         # multi pod could mount it at the same time
+  nfs:
+    server: 10.38.14.136
+    path: "/nfs"
+
+--- #nfs-pvc
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-pvc
+  namespace: panlm2
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi # init size, could be resize later
+
+--- #nfs-pod-1
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nfs-pod-1
+  namespace: panlm2
+spec:
+  volumes:
+    - name: task-pv-storage
+      persistentVolumeClaim:
+        claimName: nfs-pvc
+  containers:
+    - name: busybox
+      image: busybox
+      command: ["sh","-c","while true; do echo success >> /output/output-1.log; sleep 1; done"]
+      volumeMounts:
+        - mountPath: "/output"
+          name: task-pv-storage
+
+--- #nfs-pod-2
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nfs-pod-2
+  namespace: panlm2
+spec:
+  volumes:
+    - name: task-pv-storage
+      persistentVolumeClaim:
+        claimName: nfs-pvc
+  containers:
+    - name: busybox
+      image: busybox
+      command: ["sh","-c","while true; do echo success >> /output/output-2.log; sleep 1; done"]
+      volumeMounts:
+        - mountPath: "/output"
+          name: task-pv-storage
+

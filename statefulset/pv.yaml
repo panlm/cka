@@ -9,7 +9,7 @@ spec:
   capacity:
     storage: 10Gi
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteOnce       # due to it is ReadWriteOnce, need 1:1 to pod:pv
   hostPath:
     path: "/mnt/data1"
 ---
