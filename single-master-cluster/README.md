@@ -21,10 +21,9 @@ users:
 * on the first node (as master)
   * modify /tmp/init, change ip address and node register name
   * create master node
-
-```
-sudo kubeadm init --config /tmp/init
-```
+  ```
+  sudo kubeadm init --config /tmp/init
+  ```
 
 * on the others node (as worker)
   * modify /tmp/join, change master ip and node register name
