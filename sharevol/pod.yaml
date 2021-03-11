@@ -1,0 +1,31 @@
+# https://kubernetes.io/docs/tasks/configure-pod-container/configure-volume-storage/
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: logging-sidecar
+  name: logging-sidecar
+  namespace: baz
+spec:
+  containers:
+  - image: busybox
+    name: logging-sidecar
+    command: ["sh","-c","while true; do echo Logging data >> /output/output.log; sleep 5; done"]
+    volumeMounts:
+    - name: vol
+      mountPath: /output
+    resources: {}
+  - image: busybox
+    name: sidecar
+    command: ["sh","-c","tail -f /input/output.log"]
+    volumeMounts:
+    - name: vol
+      mountPath: /input
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+  volumes:
+  - name: vol             #shared volume
+    emptyDir: {}
+status: {}
