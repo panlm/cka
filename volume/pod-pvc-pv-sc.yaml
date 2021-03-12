@@ -4,7 +4,7 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: manual
-provisioner: kubernetes.io/no-provisioner
+provisioner: kubernetes.io/no-provisioner # local provisioner do not support dynamic provisioning 
 volumeBindingMode: WaitForFirstConsumer
 allowVolumeExpansion: true # will extend pvc later
 reclaimPolicy: Retain
@@ -22,7 +22,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/etc/data"
+    path: "/tmp/data"
   persistentVolumeReclaimPolicy: Recycle  # auto recycle 
 ---
 apiVersion: v1
@@ -46,6 +46,7 @@ spec:
     - name: task-pv-storage
       persistentVolumeClaim:
         claimName: host-storage-pvc  # pvc name
+  terminationGracePeriodSeconds: 0
   containers:
     - name: busybox
       image: busybox
