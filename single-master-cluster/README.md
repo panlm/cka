@@ -55,8 +55,8 @@ kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 (option)
 
 ```
-sudo -E kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
-sudo -E kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml
+kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
+kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml
 ```
 
 ## Others
