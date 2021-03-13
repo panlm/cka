@@ -3,7 +3,6 @@
 gateway=$(netstat -nr |egrep '^0.0.0.0' |awk '{print $2}' )
 prefix=$(echo ${gateway%.*})
 ip=$(ifconfig |egrep "$prefix" |awk '{print $2}')
-hostname=$(hostname)
 
 ##################################
 # kubeadm create cluster on ubuntu
@@ -213,53 +212,28 @@ sudo apt-mark hold kubelet kubeadm kubectl
 # - networking - podSubnet
 
 echo 'apiVersion: kubeadm.k8s.io/v1beta2
-bootstrapTokens:
-- groups:
-  - system:bootstrappers:kubeadm:default-node-token
-  token: abcdef.0123456789abcdef
-  ttl: 24h0m0s
-  usages:
-  - signing
-  - authentication
 kind: InitConfiguration
-localAPIEndpoint:
-  advertiseAddress: 10.38.4.102
-  bindPort: 6443
 nodeRegistration:
   criSocket: /run/containerd/containerd.sock
-  name: ubuntu
-  taints:
-  - effect: NoSchedule
-    key: node-role.kubernetes.io/master
 ---
-apiServer:
-  timeoutForControlPlane: 4m0s
 apiVersion: kubeadm.k8s.io/v1beta2
-certificatesDir: /etc/kubernetes/pki
-clusterName: kubernetes
-controllerManager: {}
-dns:
-  type: CoreDNS
-etcd:
-  local:
-    dataDir: /var/lib/etcd
-imageRepository: k8s.gcr.io
 kind: ClusterConfiguration
-kubernetesVersion: v1.20.0
 networking:
-  dnsDomain: cluster.local
-  serviceSubnet: 10.96.0.0/12
   podSubnet: 192.168.0.0/16
-scheduler: {}
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
 cgroupDriver: systemd' |tee /tmp/init
 
 # kubeadm init --config /tmp/init
+# kubeadm token list
+token=$(kubeadm token create)
+hash=$(openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //')
 
 
 ## join cluster from config
+# kubeadm join --token <token> <control-plane-host>:<control-plane-port> --discovery-token-ca-cert-hash sha256:<hash>
+
 #kubeadm config print join-defaults > join
 
 # add cgroup drive part to it
@@ -271,16 +245,14 @@ echo 'apiVersion: kubeadm.k8s.io/v1beta2
 caCertPath: /etc/kubernetes/pki/ca.crt
 discovery:
   bootstrapToken:
-    apiServerEndpoint: 10.38.4.102:6443
-    token: abcdef.0123456789abcdef
+    apiServerEndpoint: '"${ip}"':6443
+    token: '"${token}"'
     unsafeSkipCAVerification: true
   timeout: 5m0s
-  tlsBootstrapToken: abcdef.0123456789abcdef
+  tlsBootstrapToken: '"${token}"'
 kind: JoinConfiguration
 nodeRegistration:
   criSocket: /run/containerd/containerd.sock
-  name: ubuntu2
-  taints: null
 ---
 apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
