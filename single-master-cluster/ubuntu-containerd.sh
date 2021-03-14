@@ -225,7 +225,7 @@ apiVersion: kubelet.config.k8s.io/v1beta1
 kind: KubeletConfiguration
 cgroupDriver: systemd' |tee /tmp/init
 
-# kubeadm init --config /tmp/init
+kubeadm init --config /tmp/init
 # kubeadm token list
 token=$(kubeadm token create)
 hash=$(openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //')
