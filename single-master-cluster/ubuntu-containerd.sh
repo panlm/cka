@@ -207,7 +207,6 @@ sudo apt-mark hold kubelet kubeadm kubectl
 
 # add cgroup drive part to it
 # and need change some default settings
-# - localAPIEndpoint - advertiseAddress
 # - nodeRegistration - criSocket
 # - networking - podSubnet
 
@@ -226,7 +225,9 @@ kind: KubeletConfiguration
 cgroupDriver: systemd' |tee /tmp/init
 
 kubeadm init --config /tmp/init
+
 # kubeadm token list
+# kubeadm token create --print-join-command
 token=$(kubeadm token create)
 hash=$(openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //')
 
