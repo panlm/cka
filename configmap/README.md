@@ -6,14 +6,14 @@
 
 ## create configmap
 
-```
+```sh
 kubectl create cm kube-config --from-file=/etc/kubernetes/admin.conf \
   --from-literal=path=/etc/my-kube-config/admin.conf
 ```
 
 ## pod yaml
 
-``` yaml
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
@@ -42,11 +42,4 @@ spec:
       - key: admin.conf
         path: admin.conf
 ```
-
-
-
-
-
-
-
 

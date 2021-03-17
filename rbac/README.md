@@ -42,7 +42,7 @@ roleRef:
 
 ## run as service account
 
-```
+```sh
 # could access
 kubectl get po --as=system:serviceaccount:default:sa1
 # could NOT access

@@ -42,19 +42,19 @@ you could choose `flannel` or `calico`
 
 ### install flannel
 
-```
+```sh
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 ```
 
 ### install calico
 
-```
+```sh
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 ```
 
 (option)
 
-```
+```sh
 kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
 kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml
 ```
